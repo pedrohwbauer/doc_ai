@@ -1,0 +1,7 @@
+django
+langchain
+langchain-chroma
+langchain-community
+langchain-openai
+chromadb
+python-dotenv
