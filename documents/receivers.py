@@ -9,13 +9,13 @@ from .models import Document
 
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OpenAIEmbeddings
 
 embeddings = OpenAIEmbeddings(
     model="text-embedding-3-small"
 )
-persistent_directory = settings.BASE_DIR / "db" / "chroma_db"
+persistent_directory = str(settings.BASE_DIR / "db" / "chroma_db")
 chroma_db = Chroma(collection_name="documents", embedding_function=embeddings, persist_directory=persistent_directory)
 
 @receiver(post_save, sender=Document)
