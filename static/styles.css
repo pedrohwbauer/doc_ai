@@ -1,5 +1,7 @@
 body{margin-top:20px;}
 
+.pdfobject-container { height: 500px; border: 1px solid #ccc; }
+
 .messages-container {
     display: flex;
     flex-direction: column;

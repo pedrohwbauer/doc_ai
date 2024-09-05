@@ -17,7 +17,7 @@
               {% endfor %}
             </div>
           <div class="flex-grow-0 py-3 px-4 border-top">
-            <form id="send-form" hx-post="{% url "create-user-message" %}" hx-target="#message-list" hx-swap="beforeend">
+            <form id="send-form">
               {% csrf_token %}
               <div class="input-group">
                 <input
@@ -33,11 +33,43 @@
         </div>
       </div>
       <div class="col-md-3 d-flex flex-column sidebar">
-        <canvas id="pdf-canvas">
+        <div id="pdf-container">
 
-        </canvas>
+        </div>
       </div>
     </div>
   </div>
 </main>
+<script type="module" >
+  document.getElementById('send-form').addEventListener('submit', async (event) => {
+    event.preventDefault()
+    const formData = new FormData(event.target);
+    const content = formData.get('content');
+    const messageList = document.getElementById('message-list')
+    messageList.innerHTML += `
+      <div class="chat-message-right pb-4">
+        <div class="flex-shrink-1 bg-primary text-light rounded py-2 px-3 mr-3">
+          ${content}
+        </div>
+      </div>
+    `
+    const res = await fetch('create-user-message', {
+      method: 'POST',
+      body: formData
+    })
+    const {answer, metadata} = await res.json()
+    console.log(metadata)
+    const pdfUrl = `${metadata.url}#page=${metadata.page + 1}`
+    messageList.innerHTML += `
+      <div class="chat-message-left pb-4">
+        <div class="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
+          ${answer}
+          <br>
+          <a href="${pdfUrl}">Consultar a documentação</a>
+        </div>
+      </div>
+    `
+    PDFObject.embed(pdfUrl, "#pdf-container")
+  })
+</script>
 {% endblock %}

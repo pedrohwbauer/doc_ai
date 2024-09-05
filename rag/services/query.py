@@ -21,7 +21,7 @@ def query(question):
         + question
         + "\n\nDocument content:\n"
         + f"\n\n{doc.page_content}"
-        + "\n\nPlease provide an answer based only on the provided document content. If the answer is not found in the document, respond with 'I'm not sure'."
+        + "\n\nPlease provide an answer in the portuguese language based only on the provided document content. If the answer is not found in the document, respond with 'I'm not sure'."
     )
 
     model = ChatOpenAI(model="gpt-4o")
