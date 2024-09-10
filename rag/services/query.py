@@ -2,7 +2,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from .db import Database
 
-def query(question):
+async def query(question):
     db = Database.get_instance()
     print("\n--- Question ---")
     print(f"\n/{question}")
@@ -11,11 +11,11 @@ def query(question):
         search_type="similarity",
         search_kwargs={"k": 1},
     )
-    doc = retriever.invoke(question)[0]
+    doc = (await retriever.ainvoke(question))[0]
 
     # Display the relevant results with metadata
     print(f"Document content:\n{doc}\n")
-
+    
     combined_input = (
         "Here is a document that might help answer the question: "
         + question
@@ -23,7 +23,7 @@ def query(question):
         + f"\n\n{doc.page_content}"
         + "\n\nPlease provide an answer in the portuguese language based only on the provided document content. If the answer is not found in the document, respond with 'I'm not sure'."
     )
-
+    
     model = ChatOpenAI(model="gpt-4o")
 
     messages = [
@@ -37,5 +37,5 @@ def query(question):
     print(result)
     print("Content only:")
     print(result.content)
-
+    
     return (result.content, doc.metadata)
